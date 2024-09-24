@@ -450,7 +450,7 @@ def add_user_insert(userid, firstname, lastname,userroleid,password):
     cur = conn.cursor()
     sql = """
         INSERT into Users(userid, firstname, lastname, userroleid, password)
-        VALUES (%s,%s,%s,%s);
+        VALUES (%s,%s,%s,%s,%s);
         """
     print_sql_string(sql, (userid, firstname, lastname,userroleid,password))
     try:
@@ -489,7 +489,7 @@ def delete_user(userid):
         sql = f"""
         DELETE
         FROM users
-        WHERE userid = {userid};
+        WHERE userid = '{userid}';
         """
 
         cur.execute(sql,())
