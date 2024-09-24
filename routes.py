@@ -63,8 +63,10 @@ def login():
     if(request.method == 'POST'):
         # Get our login value
         val = database.check_login(request.form['userid'], request.form['password'])
-        print("this is val"+val)
-        print("this is request.form"+request.form)
+        print("this is val")
+        print(val)
+        print("this is request.form")
+        print(request.form)
         # If our database connection gave back an error
         if(val == None):
             errortext = "Error with the database connection."
@@ -79,7 +81,8 @@ def login():
             return redirect(url_for('login'))
 
         # If it was successful, then we can log them in :)
-        print("this is val[0]"+val[0])
+        print("this is val[0]")
+        print(val[0])
         session['name'] = val[0]['firstname']
         session['userid'] = request.form['userid']
         session['logged_in'] = True
