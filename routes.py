@@ -109,6 +109,9 @@ def list_users():
     '''
     List all rows in users by calling the relvant database calls and pushing to the appropriate template
     '''
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
+    
     # connect to the database and call the relevant function
     users_listdict = database.list_users()
 
@@ -471,3 +474,23 @@ def add_user():
                            session=session,
                            page=page,
                            userroles=database.list_userroles())
+
+
+@app.route('/aircraft')
+def aircraft():
+    return render_template('aircraft.html', session=session, page=page)
+
+@app.route('/aircraft/show')
+def show_aircraft():
+    aircraft_listdict = database.list_aircraft()
+    return render_template('aircraft_show.html', session=session, page=page, aircrafts=aircraft_listdict)
+
+@app.route('/aircraft/search', methods=['POST', 'GET'])
+def search_aircraft():
+    if request.method == 'POST':
+        aircraft_id = request.form['aircraft_id']
+        aircraft_listdict = database.search_aircraft(aircraft_id)
+        return render_template('aircraft_search_result.html', session=session, page=page, aircrafts=aircraft_listdict)
+    else:
+        return render_template('aircraft_search.html', session=session, page=page)
+

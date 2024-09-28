@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aircraft Search Results</title>
+  </head>
+  <body>
+    <h1>Aircraft Search Results</h1>
+    <ul>
+      {% for aircraft in aircrafts %}
+      <li>{{ aircraft.aircraft_id }} - {{ aircraft.aircraft_name }}</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>

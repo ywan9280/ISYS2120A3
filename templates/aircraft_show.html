@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aircraft Show</title>
+    <style>
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        border: 1px solid black;
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Aircraft Show</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Aircraftid</th>
+          <th>icaocode</th>
+          <th>aircraftregistration</th>
+          <th>name</th>
+          <th>manufacturer</th>
+          <th>model</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for aircraft in aircrafts %}
+        <tr>
+          <td>{{ aircraft.aircraftid }}</td>
+          <td>{{ aircraft.icaocode }}</td>
+          <td>{{ aircraft.aircraftregistration }}</td>
+          <td>{{ aircraft.name }}</td>
+          <td>{{ aircraft.manufacturer }}</td>
+          <td>{{ aircraft.model }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

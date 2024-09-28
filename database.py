@@ -507,3 +507,69 @@ def delete_user(userid):
         cur.close()                     # Close the cursor
         conn.close()                    # Close the connection to the db
         raise
+
+
+def list_aircraft():
+    # Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        # If a connection cannot be established, send an Null object
+        return None
+    # Set up the rows as a dictionary
+    cur = conn.cursor()
+    returndict = None
+
+    try:
+        # Set-up our SQL query
+        sql = """SELECT *
+                    FROM aircraft """
+        
+        # Retrieve all the information we need from the query
+        returndict = dictfetchall(cur,sql)
+        
+        # report to the console what we recieved
+        print(returndict)
+    except:
+        # If there are any errors, we print something nice and return a null value
+        print("Error Fetching from Database", sys.exc_info()[0])
+
+    # Close our connections to prevent saturation
+    cur.close()
+    conn.close()
+    
+    # return our struct
+    return returndict
+
+def search_aircraft(aircraft_id):
+    # Get the database connection and set up the cursor
+    conn = database_connect()
+    if(conn is None):
+        # If a connection cannot be established, send an Null object
+        return None
+    # Set up the rows as a dictionary
+    cur = conn.cursor()
+    returndict = None
+
+    try:
+        # Set-up our SQL query
+        sql = """SELECT *
+                 FROM aircraft
+                 WHERE aircraft_id = %s"""
+        
+        # Retrieve all the information we need from the query
+        returndict = dictfetchall(cur, sql, (aircraft_id,))
+
+        # report to the console what we received
+        print(returndict)
+    except:
+        # If there are any errors, we print something nice and return a null value
+        print("Error Fetching from Database", sys.exc_info()[0])
+
+    # Close our connections to prevent saturation
+    cur.close()
+    conn.close()
+
+    # return our struct
+    return returndict
+
+    
