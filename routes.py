@@ -1,5 +1,6 @@
 # Importing the Flask Framework
 
+from urllib import request
 from flask import *
 import database
 import configparser
@@ -84,6 +85,7 @@ def login():
         session['userid'] = request.form['userid']
         session['logged_in'] = True
         session['isadmin'] = val[0]['isadmin']
+        print(session)
         return redirect(url_for('index'))
     else:
         # Else, they're just looking at the page :)
@@ -478,19 +480,90 @@ def add_user():
 
 @app.route('/aircraft')
 def aircraft():
+    # check log in
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
     return render_template('aircraft.html', session=session, page=page)
+
+# function for user and admin
 
 @app.route('/aircraft/show')
 def show_aircraft():
+    # check log in
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
     aircraft_listdict = database.list_aircraft()
     return render_template('aircraft_show.html', session=session, page=page, aircrafts=aircraft_listdict)
 
 @app.route('/aircraft/search', methods=['POST', 'GET'])
 def search_aircraft():
+    # check log in
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
     if request.method == 'POST':
         aircraft_id = request.form['aircraft_id']
+        print(aircraft_id)
         aircraft_listdict = database.search_aircraft(aircraft_id)
+        print(aircraft_listdict)
         return render_template('aircraft_search_result.html', session=session, page=page, aircrafts=aircraft_listdict)
     else:
         return render_template('aircraft_search.html', session=session, page=page)
 
+@app.route('/aircraft/display')
+def display_aircraft():
+    # check log in
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
+    aircraft_display = database.display()
+    return render_template('aircraft_display.html', session=session, page=page, aircrafts=aircraft_display) 
+
+
+# function for admin
+
+@app.route('/aircraft/add', methods=['POST', 'GET'])
+def add_aircraft():
+    # check log in
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
+    if request.method == 'GET':
+        number = database.getid()
+        return render_template('aircraft_add.html', session=session, page=page, number=number+1)
+    if request.method == 'POST':
+        aircraft_id = int(request.form['aircraftid'])
+        aircraft_icao_code = request.form['icaocode']
+        aircraft_registration = request.form['aircraftregistration']
+        aircraft_name = request.form['name']
+        aircraft_manufacturer = request.form['manufacturer']
+        aircraft_model = request.form['model']
+        database.add_aircraft(aircraft_id, aircraft_icao_code, aircraft_registration, aircraft_name, aircraft_manufacturer, aircraft_model)
+        return redirect(url_for('aircraft'))
+        
+
+@app.route('/aircraft/update', methods=['POST', 'GET'])
+def update_aircraft():
+    # check log in
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
+    if request.method == 'GET':
+        aircraft_id = request.args.get('aircraft_id')
+        aircraft_icao_code = request.args.get('aircraft_icao_code')
+        aircraft_registration = request.args.get('aircraft_registration')
+        aircraft_name = request.args.get('aircraft_name')
+        aircraft_manufacturer = request.args.get('aircraft_manufacturer')
+        aircraft_model = request.args.get('aircraft_model')
+        return render_template('aircraft_update.html', session=session, page=page, 
+                                aircraft_id=aircraft_id, 
+                                aircraft_icao_code=aircraft_icao_code, 
+                                aircraft_registration=aircraft_registration, 
+                                aircraft_name=aircraft_name, 
+                                aircraft_manufacturer=aircraft_manufacturer, 
+                                aircraft_model=aircraft_model)
+    if request.method == 'POST':
+        aircraft_id = request.form['aircraft_id']
+        aircraft_icao_code = request.form['aircraft_icao_code']
+        aircraft_registration = request.form['aircraft_registration']
+        aircraft_name = request.form['aircraft_name']
+        aircraft_manufacturer = request.form['aircraft_manufacturer']
+        aircraft_model = request.form['aircraft_model']
+        database.update_aircraft(aircraft_id, aircraft_icao_code, aircraft_registration, aircraft_name, aircraft_manufacturer, aircraft_model)
+        return redirect(url_for('aircraft'))

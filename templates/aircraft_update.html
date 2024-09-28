@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>update aircraft</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      /* input block */
+      input[type="text"] {
+        display: block;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>update aircraft</h1>
+    <table>
+      <tr>
+        <th>aircraft id</th>
+        <th>aircraft icao code</th>
+        <th>aircraft registration</th>
+        <th>aircraft name</th>
+        <th>aircraft manufacturer</th>
+        <th>aircraft model</th>
+      </tr>
+      <tr>
+        <td>{{ aircraft_id }}</td>
+        <td>{{ aircraft_icao_code }}</td>
+        <td>{{ aircraft_registration }}</td>
+        <td>{{ aircraft_name }}</td>
+        <td>{{ aircraft_manufacturer }}</td>
+        <td>{{ aircraft_model }}</td>
+      </tr>
+    </table>
+
+    <form action="{{ url_for('update_aircraft') }}" method="post">
+      <input type="hidden" name="aircraft_id" value="{{ aircraft_id }}" />
+      <label for="aircraft_icao_code">ICAO: 4 characters</label>
+      <input
+        type="text"
+        name="aircraft_icao_code"
+        value="{{ aircraft_icao_code }}"
+        required
+        pattern="[A-Za-z0-9]{4}"
+        title="ICAO code must be 4 characters (letters or numbers)"
+        oninput="this.value = this.value.toUpperCase()"
+        maxlength="4"
+      />
+      <label for="aircraft_registration">Aircraft registration (XX-XXX)</label>
+      <input
+        type="text"
+        name="aircraft_registration"
+        value="{{ aircraft_registration }}"
+        required
+        pattern="[A-Za-z]{2}-[A-Za-z0-9]{3}"
+        title="Aircraft registration must be 2 characters, - and 3 numbers (XX-XXX)"
+        oninput="this.value = this.value.toUpperCase()"
+        maxlength="6"
+      />
+      <label for="aircraft_name">Name: 1-100 characters</label>
+      <input
+        type="text"
+        name="aircraft_name"
+        value="{{ aircraft_name }}"
+        required
+        pattern="[A-Za-z0-9\s\p{P}]{1,100}"
+        title="Name: 1-100 characters"
+      />
+      <label for="aircraft_manufacturer">Manufacturer: 1-100 characters</label>
+      <input
+        type="text"
+        name="aircraft_manufacturer"
+        value="{{ aircraft_manufacturer }}"
+        required
+        pattern="[A-Za-z0-9\s\p{P}]{1,100}"
+        title="Manufacturer must be 1-100 characters (letters, numbers, spaces, and punctuation)"
+      />
+      <label for="aircraft_model">Model: 1-100 characters</label>
+      <input
+        type="text"
+        name="aircraft_model"
+        value="{{ aircraft_model }}"
+        required
+        pattern="[A-Za-z0-9\s\p{P}]{1,100}"
+        title="Model must be 1-100 characters (letters, numbers, spaces, and punctuation)"
+      />
+      <button type="submit">Update</button>
+    </form>
+    <a href="{{ url_for('aircraft') }}">Cancel</a>
+  </body>
+</html>

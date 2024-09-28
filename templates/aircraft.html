@@ -9,5 +9,12 @@
     <h1>Aircraft</h1>
     <a href="{{ url_for('show_aircraft') }}" class="f1">Show Aircraft</a>
     <a href="{{ url_for('search_aircraft') }}" class="f1">Search Aircraft</a>
+    <a href="{{ url_for('display_aircraft') }}" class="f1">Display Aircraft</a>
+    <!-- 如果是admin，则显示add aircraft -->
+    {% if session['isadmin'] == 1 %}
+    <a href="{{ url_for('add_aircraft') }}" class="f1">Add Aircraft</a>
+    {% endif %}
+
+    <a href="{{ url_for('index') }}" class="f1">Back</a>
   </body>
 </html>

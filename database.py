@@ -522,7 +522,8 @@ def list_aircraft():
     try:
         # Set-up our SQL query
         sql = """SELECT *
-                    FROM aircraft """
+                    FROM aircraft 
+                    order by aircraftid asc"""
         
         # Retrieve all the information we need from the query
         returndict = dictfetchall(cur,sql)
@@ -541,35 +542,126 @@ def list_aircraft():
     return returndict
 
 def search_aircraft(aircraft_id):
+    try:
+        aircraft_id = int(aircraft_id)
+    except ValueError:
+        print("Invalid aircraft ID. Please enter a valid integer.")
+        return []
     # Get the database connection and set up the cursor
     conn = database_connect()
-    if(conn is None):
-        # If a connection cannot be established, send an Null object
+    if conn is None:
+        # If a connection cannot be established, send a None object
         return None
-    # Set up the rows as a dictionary
+    
     cur = conn.cursor()
-    returndict = None
+    result = None
 
     try:
-        # Set-up our SQL query
+        # Set-up our SQL query with parameterized query
         sql = """SELECT *
                  FROM aircraft
-                 WHERE aircraft_id = %s"""
+                 WHERE aircraftid = %s"""
         
-        # Retrieve all the information we need from the query
-        returndict = dictfetchall(cur, sql, (aircraft_id,))
+        # Execute the query
+        cur.execute(sql, (aircraft_id,))
+        
+        # Fetch all rows
+        rows = cur.fetchall()
+        
+        # Get column names
+        columns = [desc[0] for desc in cur.description]
+        
+        # Convert to list of dictionaries
+        result = [dict(zip(columns, row)) for row in rows]
 
-        # report to the console what we received
-        print(returndict)
-    except:
-        # If there are any errors, we print something nice and return a null value
-        print("Error Fetching from Database", sys.exc_info()[0])
+        # Report to the console what we received
+        print(result)
+    except Exception as e:
+        # If there are any errors, we print something nice and return a None value
+        print(f"Error Fetching from Database: {str(e)}")
+    finally:
+        # Close our connections to prevent saturation
+        cur.close()
+        conn.close()
 
-    # Close our connections to prevent saturation
-    cur.close()
-    conn.close()
+    # Return our result
+    return result
 
-    # return our struct
-    return returndict
+def display():
+    conn = database_connect()
+    if conn is None:
+        return None
+    cur = conn.cursor()
+    result = []
+    try:
+        sql = """SELECT count(aircraftid),manufacturer 
+                 FROM aircraft 
+                 GROUP BY manufacturer 
+                 ORDER BY count(aircraftid) DESC;"""
+        cur.execute(sql)
+        result = cur.fetchall()
+        print(result)
+    except Exception as e:
+        print(f"Error Fetching from Database: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+    return result
 
-    
+def getid():
+    conn = database_connect()
+    if conn is None:
+        return None
+    cur = conn.cursor()
+    result = []
+    try:
+        sql = """SELECT count(aircraftid) 
+                 FROM aircraft"""
+        cur.execute(sql)
+        result = cur.fetchone()
+        number = int(result[0])
+    except Exception as e:
+        print(f"Error Fetching from Database: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+    return number
+
+def add_aircraft(aircraft_id, aircraft_icao_code, aircraft_registration, aircraft_name, aircraft_manufacturer, aircraft_model):
+    conn = database_connect()
+    if conn is None:
+        return None
+    cur = conn.cursor()
+    try:
+        sql = """INSERT INTO aircraft (aircraftid, icaocode, aircraftregistration, name, manufacturer, model)
+                 VALUES (%s, %s, %s, %s, %s, %s)"""
+        cur.execute(sql, (aircraft_id, aircraft_icao_code, aircraft_registration, aircraft_name, aircraft_manufacturer, aircraft_model))
+        conn.commit()
+    except Exception as e:
+        print(f"Error Adding Aircraft: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+    return True
+
+def update_aircraft(aircraft_id, aircraft_icao_code, aircraft_registration, aircraft_name, aircraft_manufacturer, aircraft_model):
+    conn = database_connect()
+    if conn is None:
+        return None
+    cur = conn.cursor()
+    try:
+        sql = """UPDATE aircraft 
+                    SET icaocode = %s, 
+                        aircraftregistration = %s, 
+                        name = %s, 
+                        manufacturer = %s, 
+                        model = %s 
+                    WHERE aircraftid = %s"""
+        cur.execute(sql, (aircraft_icao_code, aircraft_registration, aircraft_name, aircraft_manufacturer, aircraft_model, aircraft_id))
+        conn.commit()
+    except Exception as e:
+        print(f"Error Updating Aircraft: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+    return True

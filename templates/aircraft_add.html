@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Aircraft</title>
+    <style>
+      input {
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        box-sizing: border-box;
+      }
+      input::placeholder {
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Add Aircraft</h1>
+    <!-- form for adding aircraft -->
+    <form action="{{ url_for('add_aircraft') }}" method="post">
+      <label for="aircraftid">Aircraft ID:</label>
+      <input
+        type="number"
+        id="aircraftid"
+        name="aircraftid"
+        value="{{ number }}"
+        required
+        readonly
+      />
+      <label for="icaocode"
+        ><span style="color: red">ICAO Code: </span><br />4 characters (letters
+        or numbers)</label
+      >
+      <input
+        type="text"
+        id="icaocode"
+        name="icaocode"
+        required
+        pattern="[A-Za-z0-9]{4}"
+        title="ICAO code must be 4 characters (letters or numbers)"
+        oninput="this.value = this.value.toUpperCase()"
+        maxlength="4"
+        p
+      />
+      <label for="aircraftregistration"
+        ><span style="color: red">Aircraft Registration: </span><br />2
+        characters, - and 3 numbers (XX-XXX)</label
+      >
+      <input
+        type="text"
+        id="aircraftregistration"
+        name="aircraftregistration"
+        required
+        pattern="[A-Za-z]{2}-[A-Za-z0-9]{3}"
+        title="Aircraft registration must be 2 characters, - and 3 numbers (XX-XXX)"
+        oninput="this.value = this.value.toUpperCase()"
+        maxlength="6"
+      />
+      <label for="name"
+        ><span style="color: red">Name: </span><br />1-100 characters (letters,
+        numbers, spaces)</label
+      >
+      <input
+        type="text"
+        id="name"
+        name="name"
+        pattern="[A-Za-z0-9\s\p{P}]{1,100}"
+        required
+      />
+
+      <label for="manufacturer"
+        ><span style="color: red">Manufacturer: </span><br />1-100 characters
+        (letters, numbers, spaces, and punctuation)</label
+      >
+      <input
+        type="text"
+        id="manufacturer"
+        name="manufacturer"
+        pattern="[A-Za-z0-9\s\p{P}]{1,100}"
+        required
+      />
+      <label for="model"
+        ><span style="color: red">Model: </span><br />1-100 characters (letters,
+        numbers, spaces)</label
+      >
+      <input
+        type="text"
+        id="model"
+        name="model"
+        pattern="[A-Za-z0-9\s\p{P}]{1,100}"
+        required
+      />
+
+      <button type="submit">Add Aircraft</button>
+      <a href="{{ url_for('aircraft') }}">back</a>
+    </form>
+    <script></script>
+  </body>
+</html>
