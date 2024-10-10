@@ -4,13 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aircraft Search</title>
+    <style>
+      button {
+        background-color: transparent;
+        color: black;
+        border: 1px solid black;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: black;
+        color: white;
+      }
+    </style>
   </head>
   <body>
     <h1>Aircraft Search</h1>
 
     <form action="{{ url_for('search_aircraft') }}" method="POST">
       <input type="text" placeholder="Enter Aircraft ID" name="aircraft_id" />
+      {% if session['isadmin'] == 1 %}
+      <button>Search(Update/Delete)</button>
+      {% endif %} {% if session['isadmin'] == 0 %}
       <button>Search</button>
+      {% endif %}
     </form>
+    <a href="{{ url_for('aircraft') }}" class="f1">Back to Aircraft</a>
   </body>
 </html>

@@ -83,7 +83,7 @@ def dictfetchall(cursor,sqltext,params=[]):
             for row in returnres:
                 result.append({a:b for a,b in zip(cols, row)})
 
-    print("returning result: ",result)
+    
     return result
 
 def dictfetchone(cursor,sqltext,params=None):
@@ -529,7 +529,7 @@ def list_aircraft():
         returndict = dictfetchall(cur,sql)
         
         # report to the console what we recieved
-        print(returndict)
+        
     except:
         # If there are any errors, we print something nice and return a null value
         print("Error Fetching from Database", sys.exc_info()[0])
@@ -661,6 +661,24 @@ def update_aircraft(aircraft_id, aircraft_icao_code, aircraft_registration, airc
         conn.commit()
     except Exception as e:
         print(f"Error Updating Aircraft: {str(e)}")
+    finally:
+        cur.close()
+        conn.close()
+    return True
+
+def delete_aircraft(aircraft_id):
+    print("deleting aircraft with id: ", aircraft_id)
+    conn = database_connect()
+    if conn is None:
+        return None
+    cur = conn.cursor()
+    try:
+        sql = """DELETE FROM aircraft WHERE aircraftid = %s"""
+        cur.execute(sql, (aircraft_id,))
+        conn.commit()
+    except Exception as e:
+        print(f"Error Deleting Aircraft: {str(e)}")
+        return False
     finally:
         cur.close()
         conn.close()

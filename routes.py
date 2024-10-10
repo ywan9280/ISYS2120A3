@@ -478,6 +478,9 @@ def add_user():
                            userroles=database.list_userroles())
 
 
+
+
+
 @app.route('/aircraft')
 def aircraft():
     # check log in
@@ -488,12 +491,27 @@ def aircraft():
 # function for user and admin
 
 @app.route('/aircraft/show')
-def show_aircraft():
+def show_aircraft(current_page=1):
     # check log in
     if('logged_in' not in session or not session['logged_in']):
         return redirect(url_for('login'))
     aircraft_listdict = database.list_aircraft()
-    return render_template('aircraft_show.html', session=session, page=page, aircrafts=aircraft_listdict)
+    total_items = len(aircraft_listdict)
+    total_pages = (total_items + 9) // 10
+    current_page = int(request.args.get('current_page', 1))
+    print(current_page)
+    current_page = max(1, min(current_page, total_pages))
+
+    start = (current_page - 1) * 10
+    end = start + 10
+    current_page_aircraft = aircraft_listdict[start:end]
+    print(current_page_aircraft)
+    return render_template('aircraft_show.html', 
+                           session=session, 
+                           page=page, 
+                           aircrafts=current_page_aircraft,
+                           total_pages=total_pages,
+                           current_page=current_page)
 
 @app.route('/aircraft/search', methods=['POST', 'GET'])
 def search_aircraft():
@@ -567,3 +585,13 @@ def update_aircraft():
         aircraft_model = request.form['aircraft_model']
         database.update_aircraft(aircraft_id, aircraft_icao_code, aircraft_registration, aircraft_name, aircraft_manufacturer, aircraft_model)
         return redirect(url_for('aircraft'))
+
+@app.route('/aircraft/delete/<aircraft_id>')
+def delete_aircraft(aircraft_id):
+    # check log in
+    if('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
+    if database.delete_aircraft(aircraft_id):
+        return "delete successfully"
+    else:
+        return "error: some flights are using this aircraft"

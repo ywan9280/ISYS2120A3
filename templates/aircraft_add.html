@@ -59,8 +59,7 @@
         maxlength="6"
       />
       <label for="name"
-        ><span style="color: red">Name: </span><br />1-100 characters (letters,
-        numbers, spaces)</label
+        ><span style="color: red">Name: </span><br />1-100 characters</label
       >
       <input
         type="text"
@@ -72,8 +71,7 @@
 
       <label for="manufacturer"
         ><span style="color: red">Manufacturer: </span><br />1-100 characters
-        (letters, numbers, spaces, and punctuation)</label
-      >
+      </label>
       <input
         type="text"
         id="manufacturer"
@@ -82,9 +80,8 @@
         required
       />
       <label for="model"
-        ><span style="color: red">Model: </span><br />1-100 characters (letters,
-        numbers, spaces)</label
-      >
+        ><span style="color: red">Model: </span><br />1-100 characters
+      </label>
       <input
         type="text"
         id="model"
@@ -94,7 +91,7 @@
       />
 
       <button type="submit">Add Aircraft</button>
-      <a href="{{ url_for('aircraft') }}">back</a>
+      <a href="{{ url_for('aircraft') }}" class="f1">back to aircraft</a>
     </form>
     <script></script>
   </body>
